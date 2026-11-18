@@ -1,0 +1,62 @@
+# RRchat 1 Hardened Matrix Synapse Homeserver Configuration
+server_name: "chat.example.org"
+pid_file: /data/homeserver.pid
+web_client_location: false
+
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    bind_addresses: ["0.0.0.0"]
+    resources:
+      - names: [client, federation]
+        compress: false
+
+database:
+  name: psycopg2
+  args:
+    user: synapse
+    password: "${SYNAPSE_DB_PASSWORD}"
+    database: synapse
+    host: postgres
+    port: 5432
+    cp_min: 5
+    cp_max: 20
+
+# Enforce E2EE for all direct and group rooms
+encryption_enabled_by_default_for_room_type: all
+
+# Prevent open public spam registration; require invite token or controlled API
+enable_registration: false
+registration_requires_token: true
+enable_3pid_lookup: false
+
+# Minimize server telemetry and disable reporting
+report_stats: false
+enable_metrics: false
+
+# Strong rate limiting against login brute-force and message floods
+rc_login:
+  address:
+    per_second: 0.1
+    burst_count: 5
+  account:
+    per_second: 0.1
+    burst_count: 5
+  failed_attempts:
+    per_second: 0.05
+    burst_count: 5
+
+rc_message:
+  per_second: 2
+  burst_count: 15
+
+# Disable URL previews on server so backend never fetches links inside messages
+url_preview_enabled: false
+
+# Media size cap (15 MiB encrypted blobs)
+max_upload_size: 15M
+
+# Suppress debug/message body logging
+log_config: "/data/log.config"

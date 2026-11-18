@@ -1,0 +1,11 @@
+{
+  "name": "Remix RRchat 1",
+  "description": "End-to-end encrypted, username-based private messaging platform with independent server architecture, device verification, QR identity scanning, and security engineering suite.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

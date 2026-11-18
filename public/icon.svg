@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="rrBg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#140D26" />
+      <stop offset="55%" stop-color="#0A0B12" />
+      <stop offset="100%" stop-color="#06070B" />
+    </linearGradient>
+    <linearGradient id="rrPurple" x1="110" y1="86" x2="402" y2="426" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#A855F7" />
+      <stop offset="55%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#4C1D95" />
+    </linearGradient>
+    <linearGradient id="rrChrome" x1="150" y1="140" x2="360" y2="370" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F4F4F5" />
+      <stop offset="50%" stop-color="#C4B5FD" />
+      <stop offset="100%" stop-color="#A1A1AA" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#rrBg)" />
+  <rect x="20" y="20" width="472" height="472" rx="96" stroke="#7C3AED" stroke-opacity="0.35" stroke-width="6" />
+  <path
+    d="M256 84L388 136V242C388 332 330.6 404.8 256 432C181.4 404.8 124 332 124 242V136L256 84Z"
+    fill="url(#rrPurple)"
+    fill-opacity="0.24"
+    stroke="url(#rrPurple)"
+    stroke-width="14"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M196 312V196H246C267 196 280 207.5 280 225C280 239 271.5 249.2 257.5 252.8L283 312H254.5L232 256H222V312H196ZM222 234H242.5C251.5 234 256.5 229.6 256.5 223.2C256.5 216.8 251.5 212.5 242.5 212.5H222V234Z"
+    fill="url(#rrChrome)"
+  />
+  <path
+    d="M294 312V226C294 211 304 202 318 202V312H294Z"
+    fill="#C4B5FD"
+  />
+</svg>

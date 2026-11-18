@@ -1,0 +1,199 @@
+{
+  "entities": {
+    "UserPrivateProfile": {
+      "title": "UserPrivateProfile",
+      "description": "Private owner-isolated Firebase user profile and verified email PII.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "username": { "type": "string", "pattern": "^[a-zA-Z0-9_.]{3,32}$", "minLength": 3, "maxLength": 32 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "nearbyOptIn": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "username", "displayName", "email", "createdAt", "updatedAt"]
+    },
+    "PublicNodeProfile": {
+      "title": "PublicNodeProfile",
+      "description": "Public non-PII RRchat 1 directory node for discovery and key fingerprint verification.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "username": { "type": "string", "pattern": "^[a-zA-Z0-9_.]{3,32}$", "minLength": 3, "maxLength": 32 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "badge": { "type": "string", "maxLength": 32 },
+        "ecdhFingerprint": { "type": "string", "maxLength": 128 },
+        "discoverable": { "type": "boolean" },
+        "nearbyOptIn": { "type": "boolean" },
+        "nearbyZone": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "username", "displayName", "discoverable", "updatedAt"]
+    },
+    "UserPresence": {
+      "title": "UserPresence",
+      "description": "Real-time online and typing presence indicator controlled by user privacy opt-in.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "username": { "type": "string", "pattern": "^[a-zA-Z0-9_.]{3,32}$", "minLength": 3, "maxLength": 32 },
+        "status": { "type": "string", "enum": ["online", "away", "hidden"], "maxLength": 16 },
+        "sharePresence": { "type": "boolean" },
+        "typingRoomId": { "type": "string", "maxLength": 128 },
+        "lastActiveAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "username", "status", "sharePresence", "lastActiveAt"]
+    },
+    "UserRoomLink": {
+      "title": "UserRoomLink",
+      "description": "Owner-scoped membership pointer for listing real-time cloud rooms without unbounded arrays.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "roomId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "role": { "type": "string", "enum": ["owner", "member"], "maxLength": 16 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "roomId", "title", "role", "createdAt", "updatedAt"]
+    },
+    "CloudRoom": {
+      "title": "CloudRoom",
+      "description": "Real-time Firestore synced encrypted room metadata.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "roomType": { "type": "string", "enum": ["direct", "group"], "maxLength": 16 },
+        "ownerId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "participantUids": { "type": "array" },
+        "disappearingSeconds": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "roomType", "ownerId", "participantUids", "createdAt", "updatedAt"]
+    },
+    "CloudRoomMember": {
+      "title": "CloudRoomMember",
+      "description": "Authoritative room membership and wrapped symmetric room key record.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "roomId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["owner", "member"], "maxLength": 16 },
+        "wrappedRoomKeyB64": { "type": "string", "maxLength": 2048 },
+        "joinedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "roomId", "role", "joinedAt"]
+    },
+    "CloudEncryptedMessage": {
+      "title": "CloudEncryptedMessage",
+      "description": "End-to-end encrypted ciphertext message stored in Firestore (zero plaintext).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "roomId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "senderUid": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "senderName": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "kind": { "type": "string", "enum": ["text", "sticker", "signal"], "maxLength": 16 },
+        "ciphertextB64": { "type": "string", "maxLength": 32768 },
+        "ivB64": { "type": "string", "maxLength": 128 },
+        "participantUids": { "type": "array" },
+        "recalled": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "roomId", "senderUid", "kind", "ciphertextB64", "ivB64", "participantUids", "recalled", "createdAt", "updatedAt"]
+    },
+    "CloudStory": {
+      "title": "CloudStory",
+      "description": "Real-time 24-hour social story broadcast.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "authorUid": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "authorUsername": { "type": "string", "minLength": 3, "maxLength": 32 },
+        "text": { "type": "string", "minLength": 1, "maxLength": 280 },
+        "theme": { "type": "string", "enum": ["obsidian_purple", "chrome_silver", "neon_violet"], "maxLength": 32 },
+        "visibility": { "type": "string", "enum": ["friends_or_public", "private"], "maxLength": 32 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "authorUid", "authorUsername", "text", "theme", "visibility", "createdAt"]
+    },
+    "ChatRoomMetadata": {
+      "title": "ChatRoomMetadata",
+      "description": "Synchronized chat room metadata stored in the chatRooms collection (zero plaintext message bodies).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "roomType": { "type": "string", "enum": ["direct", "group"], "maxLength": 16 },
+        "ownerId": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "participantUids": { "type": "array" },
+        "lastMessagePreview": { "type": "string", "maxLength": 160 },
+        "lastSenderName": { "type": "string", "maxLength": 64 },
+        "messageCount": { "type": "integer" },
+        "disappearingSeconds": { "type": "integer" },
+        "syncedFromLocalRoomId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "roomType", "ownerId", "participantUids", "messageCount", "createdAt", "updatedAt"]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted admin lookup registry.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserPrivateProfile" },
+      "description": "Private owner-isolated Firebase user profile containing verified email PII."
+    },
+    "/users/{userId}/roomLinks/{roomId}": {
+      "schema": { "$ref": "#/entities/UserRoomLink" },
+      "description": "User's subscribed real-time cloud room pointers."
+    },
+    "/publicNodes/{userId}": {
+      "schema": { "$ref": "#/entities/PublicNodeProfile" },
+      "description": "Public non-PII discovery directory for RRchat 1 nodes."
+    },
+    "/presence/{userId}": {
+      "schema": { "$ref": "#/entities/UserPresence" },
+      "description": "Real-time presence and typing indicators."
+    },
+    "/chatRooms/{chatRoomId}": {
+      "schema": { "$ref": "#/entities/ChatRoomMetadata" },
+      "description": "Synchronized chat room metadata collection for real-time cross-device overview and participant tracking."
+    },
+    "/rooms/{roomId}": {
+      "schema": { "$ref": "#/entities/CloudRoom" },
+      "description": "Real-time cloud room metadata."
+    },
+    "/rooms/{roomId}/members/{memberUid}": {
+      "schema": { "$ref": "#/entities/CloudRoomMember" },
+      "description": "Authoritative room membership documents."
+    },
+    "/rooms/{roomId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/CloudEncryptedMessage" },
+      "description": "Real-time end-to-end encrypted messages."
+    },
+    "/stories/{storyId}": {
+      "schema": { "$ref": "#/entities/CloudStory" },
+      "description": "Real-time 24-hour social stories."
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Admin role verification documents."
+    }
+  }
+}

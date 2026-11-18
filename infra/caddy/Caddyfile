@@ -1,0 +1,25 @@
+# RRchat 1 Caddy Reverse Proxy (HTTPS / TLS 1.3)
+chat.example.org {
+  encode zstd gzip
+
+  # Strict transport & browser security headers
+  header {
+    Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    Referrer-Policy "no-referrer"
+    Permissions-Policy "geolocation=(), interest-cohort=()"
+    -Server
+  }
+
+  # Block Matrix Synapse Admin API completely from the public internet
+  @blocked_admin path /_synapse/admin* /_synapse/client/*admin*
+  respond @blocked_admin 403
+
+  # Proxy Matrix Client-Server & Federation APIs to internal Synapse container
+  reverse_proxy /_matrix/* synapse:8008 {
+    header_up X-Forwarded-Proto {scheme}
+    header_up X-Forwarded-For {remote_host}
+  }
+
+  respond 404
+}
